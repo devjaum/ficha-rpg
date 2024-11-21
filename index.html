@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Criação de Personagem RPG</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="containerAtt">
+        <div class="text">
+            <span>Pontos restantes:</span>
+            <span id="pontos">10</span>
+        </div>
+        <div class="container">
+            <div class="character"></div>
+            <div class="attributes">
+                <div class="attribute">
+                    <button onclick="decrease('for')">-</button>
+                    <span>Força: <span id="for">10</span></span>   
+                    <button onclick="increase('for')">+</button>
+                    <div class="bonus">Bônus: <span id="for-bonus">1</span></div>
+                </div>
+                <div class="attribute">
+                    <button onclick="decrease('des')">-</button>
+                    <span>Destreza: <span id="des">10</span></span>
+                    <button onclick="increase('des')">+</button>
+                    <div class="bonus">Bônus: <span id="des-bonus">1</span></div>
+                    
+                </div>
+                <div class="attribute">
+                    <button onclick="decrease('int')">-</button>
+                    <span>Inteligência: <span id="int">10</span></span>
+                    <button onclick="increase('int')">+</button>
+                    <div class="bonus">Bônus: <span id="int-bonus">1</span></div>
+                </div>
+                <div class="attribute">
+                    <button onclick="decrease('con')">-</button>
+                    <span>Constituição: <span id="con">10</span></span>
+                    <button onclick="increase('con')">+</button>
+                    <div class="bonus">Bônus: <span id="con-bonus">1</span></div>
+                </div>
+                <div class="attribute">
+                    <button onclick="decrease('sab')">-</button>
+                    <span>Sabedoria: <span id="sab">10</span></span>
+                    <button onclick="increase('sab')">+</button>
+                    <div class="bonus">Bônus: <span id="sab-bonus">1</span></div>
+                </div>
+                <div class="attribute">
+                    <button onclick="decrease('car')">-</button>
+                    <span>Carisma: <span id="car">10</span></span>
+                    <button onclick="increase('car')">+</button>
+                    <div class="bonus">Bônus: <span id="car-bonus">1</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <span class="spPericias">Pericias</span>
+    <div class="pericias">
+        <div class="attribute">
+            <button onclick="decrease('acrobatismo')">-</button>
+            <span>Acrobatismo: <span id="acrobatismo">0</span></span>   
+            <button onclick="increase('acrobatismo')">+</button>
+            <div class="bonus">Bônus: <span id="acrobatismo-bonus">1</span></div>
+        </div>
+        <div class="attribute">
+            <button onclick="decrease('arcanismo')">-</button>
+            <span>Arcanismo: <span id="arcanismo">0</span></span>   
+            <button onclick="increase('arcanismo')">+</button>
+            <div class="bonus">Bônus: <span id="arcanismo-bonus">1</span></div>
+        </div>
+        <div class="attribute">
+            <button onclick="decrease('atletismo')">-</button>
+            <span>Atletismo: <span id="atletismo">0</span></span>   
+            <button onclick="increase('atletismo')">+</button>
+            <div class="bonus">Bônus: <span id="atletismo-bonus">1</span></div>
+        </div>
+        <div class="attribute">
+            <button onclick="decrease('diplomacia')">-</button>
+            <span>Diplomacia: <span id="diplomacia">0</span></span>   
+            <button onclick="increase('diplomacia')">+</button>
+            <div class="bonus">Bônus: <span id="diplomacia-bonus">1</span></div>
+        </div>
+        <div class="attribute">
+            <button onclick="decrease('dissimulacao')">-</button>
+            <span>Dissimulação: <span id="dissimulacao">0</span></span>   
+            <button onclick="increase('dissimulacao')">+</button>
+            <div class="bonus">Bônus: <span id="dissimulacao-bonus">1</span></div>
+        </div>
+        <div class="attribute">
+            <button onclick="decrease('furtividade')">-</button>
+            <span>Furtividade: <span id="furtividade">0</span></span>   
+            <button onclick="increase('furtividade')">+</button>
+            <div class="bonus">Bônus: <span id="furtividade-bonus">1</span></div>
+        </div>
+        <div class="attribute">
+            <button onclick="decrease('intimidacao')">-</button>
+            <span>Intimidacao: <span id="intimidacao">0</span></span>   
+            <button onclick="increase('intimidacao')">+</button>
+            <div class="bonus">Bônus: <span id="intimidacao-bonus">1</span></div>
+        </div>
+        <div class="attribute">
+            <button onclick="decrease('ladroagem')">-</button>
+            <span>Ladroagem: <span id="ladroagem">0</span></span>   
+            <button onclick="increase('ladroagem')">+</button>
+            <div class="bonus">Bônus: <span id="ladroagem-bonus">1</span></div>
+        </div>
+        <div class="attribute">
+            <button onclick="decrease('manufatura')">-</button>
+            <span>Manufatura: <span id="manufatura">0</span></span>   
+            <button onclick="increase('manufatura')">+</button>
+            <div class="bonus">Bônus: <span id="manufatura-bonus">1</span></div>
+        </div>
+        <div class="attribute">
+            <button onclick="decrease('medicina')">-</button>
+            <span>Medicina: <span id="medicina">0</span></span>   
+            <button onclick="increase('medicina')">+</button>
+            <div class="bonus">Bônus: <span id="medicina-bonus">1</span></div>
+        </div>
+        <div class="attribute">
+            <button onclick="decrease('natureza')">-</button>
+            <span>Natureza: <span id="natureza">0</span></span>   
+            <button onclick="increase('natureza')">+</button>
+            <div class="bonus">Bônus: <span id="natureza-bonus">1</span></div>
+        </div>
+        <div class="attribute">
+            <button onclick="decrease('ocultismo')">-</button>
+            <span>Ocultismo: <span id="ocultismo">0</span></span>   
+            <button onclick="increase('ocultismo')">+</button>
+            <div class="bonus">Bônus: <span id="ocultismo-bonus">1</span></div>
+        </div>
+        <div class="attribute">
+            <button onclick="decrease('perfomance')">-</button>
+            <span>Perfomance: <span id="perfomance">0</span></span>   
+            <button onclick="increase('perfomance')">+</button>
+            <div class="bonus">Bônus: <span id="perfomance-bonus">1</span></div>
+        </div>
+        <div class="attribute">
+            <button onclick="decrease('religiao')">-</button>
+            <span>Religiao: <span id="religiao">0</span></span>   
+            <button onclick="increase('religiao')">+</button>
+            <div class="bonus">Bônus: <span id="religiao-bonus">1</span></div>
+        </div>
+        <div class="attribute">
+            <button onclick="decrease('sociedade')">-</button>
+            <span>Sociedade: <span id="sociedade">0</span></span>   
+            <button onclick="increase('sociedade')">+</button>
+            <div class="bonus">Bônus: <span id="sociedade-bonus">1</span></div>
+        </div>
+        <div class="attribute">
+            <button onclick="decrease('sobrevivencia')">-</button>
+            <span>Sobrevivencia: <span id="sobrevivencia">0</span></span>   
+            <button onclick="increase('sobrevivencia')">+</button>
+            <div class="bonus">Bônus: <span id="sobrevivencia-bonus">1</span></div>
+        </div>
+    </div>
+    <div class="actions">
+        <button onclick="resetAttributes()">Resetar</button>
+        <button onclick="saveAttributes()">Salvar</button>
+        <button onclick="deleteAttributes()">Deletar</button>
+        <button onclick="loadAttributes()">Carregar</button>
+        <input type="file" id="fileInput" onchange="importAttributes(event)" style="display:none;">
+        <button onclick="document.getElementById('fileInput').click()">Importar</button>
+        <button onclick="exportAttributes()">Exportar</button>
+    </div>
+</body>
+<script src="script.js"></script>
+</html>
