@@ -25,6 +25,24 @@ const pericias = {
         sociedade: 1,
         sobrevivencia: 1,    
 };
+const pericias_bonus = {
+    acrobatismo: 1,
+    arcanismo: 1,
+    atletismo: 1,
+    diplomacia: 1,
+    dissimulacao: 1,
+    furtividade: 1,
+    intimidacao: 1,
+    ladroagem: 1,
+    manufatura: 1,
+    medicina: 1,
+    natureza: 1,
+    ocultismo: 1,
+    perfomance: 1,
+    religiao: 1,
+    sociedade: 1,
+    sobrevivencia: 1,    
+};
 const periciasBonus = {
     acrobatismo: "des",
     arcanismo: "int",
@@ -68,8 +86,12 @@ const calcularBonusPericia = (id) => {
         if(id == pericia) {
             if(attributes[atributo] % 3 == 0) {
                 bonus = attributes[atributo];
+                pericias_bonus[pericia] = bonus;
             }
-            else bonus = pericias[pericia];
+            else {
+                bonus = Math.floor(attributes[atributo] / 3) * 3; // Ajusta ao múltiplo mais próximo
+                pericias_bonus[pericia] = bonus;
+            }
         }
     }
     return bonus;
