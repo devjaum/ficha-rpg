@@ -55,7 +55,7 @@ const personagens = [
     origem: "Campo Grande, MS",
     classe: "Mago",
     historia: "Sobreviveu a vida inteira nas ruas, usando pequenos truques e ilusões para distrair vítimas e ganhar a vida em jogos e apostas. Um dia, ao ser encurralado por agiotas, usou mana instintivamente para criar uma “parede de vento” que o protegeu de uma facada. Desde então, Caio tenta reproduzir o feito para usar em suas trapaças — e até vende “amuletos” falsos com pequenas cargas de mana que ele mesmo infunde. Para ele, mana é só mais uma ferramenta para ganhar dinheiro e se manter vivo.",
-    atributos: { for: 3, des: 4, con: 2, int: 5, sab: 5, car: 3 },
+    atributos: { for: 4, des: 4, con: 3, int: 4, sab: 4, car: 3 },
     habilidadeUnica: {
       nome: "Ilusão Instintiva",
       custo: 2,
@@ -271,4 +271,5 @@ toggle.addEventListener("change", () => {
 });
 document.body.classList.toggle("dark");
   label.textContent = toggle.checked ? "</br> Light Mode" : "</br> Dark mode";
+
 preencherSeletor();
