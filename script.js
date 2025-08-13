@@ -197,12 +197,52 @@ function mostrarPersonagem() {
   const shinsu = calcularShinsu(p.atributos, nivel);
   const energia = calcularEnergia(p.atributos, nivel);
 
+  const atributosHTML = Object.entries(p.atributos)
+  .map(([nome, valor]) => {
+    const nomeFormatado = {
+      for: "Força",
+      des: "Destreza",
+      con: "Constituição",
+      int: "Inteligência",
+      sab: "Sabedoria",
+      car: "Carisma"
+    }[nome] || nome;
+    return `<p><strong>${nomeFormatado}:</strong> ${valor}</p>`;
+  })
+
   document.getElementById("resultado").innerHTML = `
     <div class="card">
       <h2>${p.nome} (${p.classe})</h2>
       <p><strong>Origem:</strong> ${p.origem}</p>
       <p><strong>História:</strong> ${p.historia}</p>
-      <p><strong>Vida:</strong> ${hp} | <strong>Shinsu:</strong> ${shinsu} | <strong>Energia:</strong> ${energia}</p>
+      <div class="nivel">
+        <p><strong>Nível:</strong> ${nivel}</p>
+      </div>
+      <div class="status">
+        <p><strong>Vida:</strong> ${hp}</p>
+        <p><strong>Shinsu:</strong> ${shinsu}</p>
+        <p><strong>Energia:</strong> ${energia}</p>
+        <p><strong> Força:</strong> ${p.atributos.for}</p>
+        <p><strong> Destreza:</strong> ${p.atributos.des}</p>
+        <p><strong> Constituição:</strong> ${p.atributos.con}</p>
+        <p><strong> Inteligência:</strong> ${p.atributos.int}</p>
+        <p><strong> Sabedoria:</strong> ${p.atributos.sab}</p>
+        <p><strong> Carisma:</strong> ${p.atributos.car}</p>
+        </div>
+      <div class="habilidade">
+        <p><strong>Habilidade Única:</strong> </p>
+        <ul>
+            <li><strong>${p.habilidadeUnica.nome} </strong> (Custo: ${p.habilidadeUnica.custo} energia):</li>
+            <li>${p.habilidadeUnica.efeito}</li>
+        </ul>
+      </div>
+      <div class="talentos">
+        <p><strong>Talentos:</strong></p>
+        <ul>
+          ${p.talentos.map(t => `<li><strong>${t.nome}:</strong> ${t.efeito}</li>`).join("")}
+        </ul>
+        <p><strong>+1 de energia por turno</p>
+      </div>
     </div>
   `;
 }
@@ -293,3 +333,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const btnVoltar = document.getElementById("btnVoltar");
     if (btnVoltar) btnVoltar.onclick = sair;
 });
+
+const toggle = document.getElementById("toggleTheme");
+const label = document.getElementById("themeLabel");
+
+toggle.addEventListener("change", () => {
+  document.body.classList.toggle("dark");
+  label.textContent = toggle.checked ? "</br> Light Mode" : "</br> Dark mode";
+});
+document.body.classList.toggle("dark");
+  label.textContent = toggle.checked ? "</br> Light Mode" : "</br> Dark mode";
+preencherSeletor();

@@ -235,28 +235,56 @@ async function mostrarAdmin() {
     location.reload();
   };
 }
-async function abrirEdicao(uid, dados) {
+async function abrirEdicao(uid, ficha) {
   const container = document.getElementById("todasFichas");
+  
+  let talentosHTML = ficha.talentos.map(t => `<li><strong>${t.nome}:</strong> ${t.efeito}</li>`).join("");
   container.innerHTML = `
     <div class="card">
-      <h3>Editando ficha de: ${dados.nome}</h3>
+      <h3>Editando ficha de: ${ficha.nome}</h3>
       <label>Nível:</label>
-      <input type="number" id="editNivel" value="${dados.nivel}" min="1" />
-
+      <input type="number" id="editNivel" value="${ficha.nivel}" min="1" />
+      <div class="status">
+        <p id=Vida><strong>Vida:</strong> ${calcularHP(ficha.atributos, ficha.nivel)}</p>
+        <p id=Shinsu><strong>Shinsu:</strong> ${calcularShinsu(ficha.atributos, ficha.nivel)}</p>
+        <p id=Energia><strong>Energia:</strong> ${calcularEnergia(ficha.atributos, ficha.nivel)}</p>
+        <button id=Força><strong> Força:</strong> ${ficha.atributos.for}</button>
+        <button id=Destreza><strong> Destreza:</strong> ${ficha.atributos.des}</button>
+        <button id=Constituição><strong> Constituição:</strong> ${ficha.atributos.con}</button>
+        <button id=Inteligência><strong> Inteligência:</strong> ${ficha.atributos.int}</button>
+        <button id=Sabedoria><strong> Sabedoria:</strong> ${ficha.atributos.sab}</button>
+        <button id=Carisma><strong> Carisma:</strong> ${ficha.atributos.car}</button>
+      </div>
+      <div class="habilidade">
+        <p><strong>Habilidade Única:</strong> </p>
+        <ul>
+            <li><strong>${ficha.habilidadeUnica.nome} </strong> (Custo: ${ficha.habilidadeUnica.custo} energia):</li>
+            <li>${ficha.habilidadeUnica.efeito}</li>
+        </ul>
+      </div>
+      <div class="talentos">
+        <p><strong>Talentos:</strong></p>
+        <ul>
+          ${talentosHTML}
+        </ul>
+        <p><strong>+1 de energia por turno</p>
+      </div>
       <label>Mochila:</label>
-      <textarea id="editMochila" rows="3">${dados.mochila || ""}</textarea>
+      <textarea id="editMochila" rows="3">${ficha.mochila || ""}</textarea>
 
       <label>Notas:</label>
-      <textarea id="editNotas" rows="3">${dados.notas || ""}</textarea>
+      <textarea id="editNotas" rows="3">${ficha.notas || ""}</textarea>
 
       <button id="btnSalvarEdicao">Salvar</button>
       <button id="btnCancelarEdicao">Cancelar</button>
     </div>
   `;
 
+  
+
   document.getElementById("btnSalvarEdicao").onclick = async () => {
     const novaFicha = {
-      ...dados, // mantém todos os outros campos
+      ...ficha, // mantém todos os outros campos
       nivel: parseInt(document.getElementById("editNivel").value),
       mochila: document.getElementById("editMochila").value,
       notas: document.getElementById("editNotas").value
@@ -270,4 +298,44 @@ async function abrirEdicao(uid, dados) {
   document.getElementById("btnCancelarEdicao").onclick = () => {
     mostrarAdmin(); // volta sem salvar
   };
+
+  const nomes = {
+    for: "Força",
+    des: "Destreza",
+    con: "Constituição",
+    int: "Inteligência",
+    sab: "Sabedoria",
+    car: "Carisma"
+  };
+
+  Object.entries(ficha.atributos).forEach(([chave, valor]) => {
+    const idElemento = nomes[chave] || chave;
+    const elemento = document.getElementById(idElemento);
+
+    if (elemento) {
+      elemento.onclick = () => {
+        const novoValor = editAtributo(valor, idElemento);
+        ficha.atributos[chave] = novoValor;
+        elemento.innerHTML = `<strong>${idElemento}:</strong> ${novoValor}`;
+        const vida = document.getElementById("Vida");
+        const shinsu = document.getElementById("Shinsu");
+        const energia = document.getElementById("Energia");
+        
+        vida.innerHTML = `<strong> Vida:</strong> ${calcularHP(ficha.atributos, ficha.nivel)}`
+        shinsu.innerHTML = `<strong> Shinsu:</strong> ${calcularShinsu(ficha.atributos, ficha.nivel)}`
+        energia.innerHTML = `<strong> Energia:</strong> ${calcularEnergia(ficha.atributos, ficha.nivel)}`
+      };
+    }
+    });
+
+
+  function editAtributo(value, type) {
+    let newAtributo = prompt(`Digite o novo atributo para ${type} (anterior: ${value})`);
+    if(newAtributo){
+      alert(`Alterado o atributo de ${type} de ${value} para ${newAtributo}`);
+      return newAtributo;
+    }
+    alert("Você não digitou nada!");
+    return value;
+  }
 }
