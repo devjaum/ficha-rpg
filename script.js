@@ -1,224 +1,274 @@
-const attributes = {
-    for: 1,
-    des: 1,
-    int: 1,
-    con: 1,
-    sab: 1,
-    car: 1,
-    pontos: 20,
-};
-const pericias = {
-        acrobatismo: 1,
-        arcanismo: 1,
-        atletismo: 1,
-        diplomacia: 1,
-        dissimulacao: 1,
-        furtividade: 1,
-        intimidacao: 1,
-        ladroagem: 1,
-        manufatura: 1,
-        medicina: 1,
-        natureza: 1,
-        ocultismo: 1,
-        perfomance: 1,
-        religiao: 1,
-        sociedade: 1,
-        sobrevivencia: 1,    
-};
-const pericias_bonus = {
-    acrobatismo: 1,
-    arcanismo: 1,
-    atletismo: 1,
-    diplomacia: 1,
-    dissimulacao: 1,
-    furtividade: 1,
-    intimidacao: 1,
-    ladroagem: 1,
-    manufatura: 1,
-    medicina: 1,
-    natureza: 1,
-    ocultismo: 1,
-    perfomance: 1,
-    religiao: 1,
-    sociedade: 1,
-    sobrevivencia: 1,    
-};
-const periciasBonus = {
-    acrobatismo: "des",
-    arcanismo: "int",
-    atletismo: "for",
-    diplomacia: "car",
-    dissimulacao: "car",
-    furtividade: "des",
-    intimidacao: "car",
-    ladroagem: "des",
-    manufatura: "int",
-    medicina: "sab",
-    natureza: "int",
-    ocultismo: "int",
-    perfomance: "car",
-    religiao: "int",
-    sociedade: "int",
-    sobrevivencia: "sab",  
-};
-// Atualiza a exibição
-const updateDisplayAtt = () => {
-    for (const key in attributes) {
-        const value = attributes[key];
-        const bonus = Math.floor(Math.log2(value));
-        document.getElementById(key).textContent = value;
-        if (key === "pontos") continue;
-        document.getElementById(`${key}-bonus`).textContent = bonus + "d6";
-    }
-};
-const updateDisplayPer = () => {
-    for (const id in pericias) {
-        const valor = pericias[id];        
-        const bonus = calcularBonusPericia(id);
-        document.getElementById(id).textContent = valor;
-        document.getElementById(`${id}-bonus`).textContent = bonus + "d6" + `(${periciasBonus[id]})`;
-    }
-    updateDisplayAtt();
-};
-const calcularBonusPericia = (id) => {
-    let bonus = 0;
-    for (let [pericia, atributo] of Object.entries(periciasBonus)) {
-        if(id == pericia) {
-            if(attributes[atributo] % 3 == 0) {
-                bonus = attributes[atributo];
-                pericias_bonus[pericia] = bonus;
-            }
-            else {
-                bonus = Math.floor(attributes[atributo] / 3) * 3; // Ajusta ao múltiplo mais próximo
-                pericias_bonus[pericia] = bonus;
-            }
-        }
-    }
-    return bonus;
+const personagens = [
+  // ⚔️ Guerreiros
+  {
+    nome: "Lucas 'Tanque' Fonseca",
+    origem: "Recife, PE",
+    classe: "Guerreiro",
+    historia: "Ex-boxeador de peso pesado, conhecido por nunca cair no ringue. Depois de se aposentar por conta de uma lesão, passou a trabalhar como segurança de casas de show. Durante um assalto a um desses locais, ao proteger uma criança, sentiu uma onda de calor percorrer o corpo — sua primeira manifestação de mana. Desde então, vem percebendo que seus socos deixam marcas impossíveis de explicar e que seu corpo aguenta golpes que matariam qualquer outro. Ainda acredita que isso é “força de vontade pura”, mas sabe que tem algo diferente acontecendo.",
+    atributos: { for: 5, des: 2, con: 5, int: 3, sab: 3, car: 4 },
+    habilidadeUnica: {
+      nome: "Imóvel como Rocha",
+      custo: 2,
+      efeito: "Por 1 turno, recebe metade do dano físico de qualquer ataque."
+    },
+    talentos: [
+      { nome: "Pele de Ferro", efeito: "+2 em testes de resistência física (Fortitude)." },
+      { nome: "Instinto Protetor", efeito: "Ao ver um aliado adjacente ser atacado, rola 1d20; com 15+, intercepta e recebe o dano." }
+    ]
+  },
+  {
+    nome: "Rogério 'Pedra' Batista",
+    origem: "Fortaleza, CE",
+    classe: "Guerreiro",
+    historia: "Pedreiro aposentado, famoso nos bairros por sua força descomunal e resistência absurda. Trabalhou por décadas em obras, carregando sacos de cimento e blocos como se fossem de isopor. Um acidente num prédio em construção o deixou soterrado por quase dez minutos; quando o encontraram, estava ileso. Desde então, moradores locais dizem que “o Pedra não quebra” e até chamam ele para resolver brigas de rua. Rogério não entende de magia, só sabe que o mundo anda estranho e que algumas pessoas têm poderes… mas ele nunca parou para pensar que possa ser uma delas.",
+    atributos: { for: 5, des: 3, con: 5, int: 2, sab: 4, car: 3 },
+    habilidadeUnica: {
+      nome: "Punhos de Pedra",
+      custo: 2,
+      efeito: "Ao acertar um ataque corpo a corpo, ignora armaduras leves e médias."
+    },
+    talentos: [
+      { nome: "Força Bruta", efeito: "+2 em testes de quebra ou empurrar objetos." },
+      { nome: "Resposta Violenta", efeito: "Se receber dano crítico, pode contra-atacar imediatamente." }
+    ]
+  },
+
+  // 🧙 Magos
+  {
+    nome: "Eduardo 'Dudu' Ramos",
+    origem: "Campinas, SP",
+    classe: "Mago",
+    historia: "Streamer e ex-gamer profissional, famoso por suas lives de jogos de fantasia. Um dia, explorando o porão da casa do avô falecido, encontrou um estranho artefato: uma luva metálica com runas apagadas. Ao colocá-la, sentiu-se energizado e, sem querer, disparou uma rajada que queimou parte da parede. Desde então, começou a treinar em segredo, tentando usar esse “truque” para impressionar amigos e seguidores, mas sem revelar a verdadeira origem. Ele acha que o artefato é de algum colecionador ou “experimento militar secreto” que o avô escondeu.",
+    atributos: { for: 2, des: 3, con: 3, int: 5, sab: 5, car: 4 },
+    habilidadeUnica: {
+      nome: "Disparo Rúnico",
+      custo: 3,
+      efeito: "Projétil mágico que causa 2d10 de dano e ignora cobertura parcial."
+    },
+    talentos: [
+      { nome: "Foco Arcano", efeito: "+2 em testes para controlar ou ativar artefatos mágicos." },
+      { nome: "Improviso Perigoso", efeito: "Pode usar qualquer objeto como catalisador mágico sem penalidade." }
+    ]
+  },
+  {
+    nome: "Caio Brandão",
+    origem: "Campo Grande, MS",
+    classe: "Mago",
+    historia: "Sobreviveu a vida inteira nas ruas, usando pequenos truques e ilusões para distrair vítimas e ganhar a vida em jogos e apostas. Um dia, ao ser encurralado por agiotas, usou mana instintivamente para criar uma “parede de vento” que o protegeu de uma facada. Desde então, Caio tenta reproduzir o feito para usar em suas trapaças — e até vende “amuletos” falsos com pequenas cargas de mana que ele mesmo infunde. Para ele, mana é só mais uma ferramenta para ganhar dinheiro e se manter vivo.",
+    atributos: { for: 3, des: 4, con: 2, int: 5, sab: 5, car: 3 },
+    habilidadeUnica: {
+      nome: "Ilusão Instintiva",
+      custo: 2,
+      efeito: "Cria uma ilusão que distrai inimigos; teste de INT CD 10 para evitar perder a ação."
+    },
+    talentos: [
+      { nome: "Mão Leve", efeito: "+2 em testes de furto ou manipulação discreta." },
+      { nome: "Trapaça Mágica", efeito: "Pode adicionar +1d4 de dano elemental a ataques físicos, 1x por combate." }
+    ]
+  },
+
+  // 🗡️ Assassino
+  {
+    nome: "Diego 'Tripa' Santana",
+    origem: "Salvador, BA",
+    classe: "Assassino",
+    historia: "Cresceu nos becos do Pelourinho, sobrevivendo de furtos e pequenos golpes. Uma noite, presenciou o assassinato de um político local — um crime abafado pelas autoridades. Diego não entende os detalhes, mas percebeu que o assassino parecia mais rápido e forte que qualquer humano comum. Desde então, passou a investigar discretamente, temendo por sua vida e suspeitando que “gente grande” esteja envolvida. Nunca falou sobre isso para ninguém, mas guarda no bolso uma pequena cápsula de vidro encontrada na cena, que brilha levemente.",
+    atributos: { for: 3, des: 5, con: 3, int: 4, sab: 4, car: 3 },
+    habilidadeUnica: {
+      nome: "Ataque Preciso",
+      custo: 2,
+      efeito: "Ao atacar um alvo distraído ou surpreso, rola dano crítico automático."
+    },
+    talentos: [
+      { nome: "Observador", efeito: "+2 em testes de Percepção para detectar detalhes ocultos." },
+      { nome: "Furtividade Natural", efeito: "Pode rolar 2d20 e escolher o melhor em testes de furtividade." }
+    ]
+  },
+  {
+    nome: "Rafael 'Sombra' Nogueira",
+    origem: "São Luís, MA",
+    classe: "Assassino",
+    historia: "Espião freelancer, contratado por empresas e políticos para vigiar adversários. Em um de seus trabalhos, seguiu um empresário misterioso até um galpão abandonado. Quando acordou, três dias haviam se passado e ele estava em casa, sem lembrar de nada. Desde então, vem sofrendo com pesadelos onde caminha por um corredor infinito, cheio de portas. Não sabe explicar a sensação, mas sente que perdeu algo — e está determinado a descobrir o que aconteceu nesses três dias.",
+    atributos: { for: 2, des: 5, con: 3, int: 5, sab: 4, car: 3 },
+    habilidadeUnica: {
+      nome: "Passos Entre Sombras",
+      custo: 2,
+      efeito: "Teleporta até 6m para um local em sombra."
+    },
+    talentos: [
+      { nome: "Memória Fotográfica", efeito: "+2 para lembrar rostos, locais ou códigos." },
+      { nome: "Informante Oculto", efeito: "Pode gastar 1 turno para obter 1 pista relevante do mestre." }
+    ]
+  },
+
+  // 🛐 Suporte
+  {
+    nome: "Miguel Araújo",
+    origem: "Juazeiro do Norte, CE",
+    classe: "Suporte",
+    historia: "Pesquisador e professor de biologia, especializado em plantas medicinais do sertão. Durante uma expedição no interior, foi picado por uma cobra rara e, para surpresa de todos, sobreviveu sem apresentar sintomas — pelo contrário, relatou ter sentido um calor intenso e uma clareza mental nunca antes experimentada. Desde esse dia, Miguel percebe que consegue acelerar a recuperação de ferimentos e doenças apenas com o toque e manipulação de ervas. Ele acredita que tudo vem de um “composto natural” ainda desconhecido que circula no corpo dele, mas na verdade está canalizando mana sem saber.",
+    atributos: { for: 2, des: 4, con: 4, int: 5, sab: 4, car: 3 },
+    habilidadeUnica: {
+      nome: "Toque Verde",
+      custo: 2,
+      efeito: "Cura 2d6 de vida de um aliado usando energia canalizada por ervas."
+    },
+    talentos: [
+      { nome: "Conhecimento Natural", efeito: "+2 em testes para identificar plantas ou venenos." },
+      { nome: "Cura Instintiva", efeito: "Uma vez por combate, pode curar sem gastar ação." }
+    ]
+  },
+  {
+    nome: "Henrique 'Bico' Matos",
+    origem: "Teresina, PI",
+    classe: "Suporte",
+    historia: "Conhecido nas comunidades rurais como um “mestre do corpo”, Bico estudou anatomia e terapias alternativas de forma autodidata, misturando massagem, pressão em pontos específicos e infusões de ervas. Um dia, ao tentar ajudar um trabalhador que caiu de um andaime, percebeu que conseguia “sentir” a dor do homem como se fosse dele. Ao continuar o tratamento, a dor simplesmente sumiu. Henrique acredita que desenvolveu uma técnica revolucionária de fisioterapia, mas o que realmente acontece é que ele transfere e manipula mana para curar — mesmo sem ter consciência disso.",
+    atributos: { for: 4, des: 4, con: 5, int: 3, sab: 4, car: 2 },
+    habilidadeUnica: {
+      nome: "Sincronia Vital",
+      custo: 2,
+      efeito: "Transfere pontos de vida de si para um aliado ou vice-versa."
+    },
+    talentos: [
+      { nome: "Leitura Corporal", efeito: "+2 em testes para detectar mentiras ou intenções." },
+      { nome: "Pressão Vital", efeito: "Pode causar 2d4 de dano ignorando armadura." }
+    ]
+  },
+
+  // 🏹 Arqueiros
+  {
+    nome: "Rafael 'Faísca' Lima",
+    origem: "Manaus, AM",
+    classe: "Arqueiro",
+    historia: "Criado nas margens do rio Negro, viveu caçando e pescando com o pai. Quando adolescente, começou a praticar parkour para se mover pela cidade rapidamente, mas manteve as habilidades de caçador. Certa vez, atirou uma flecha que atravessou dois javalis de uma só vez — algo que nem ele entende como aconteceu. Ele atribui isso a “muita prática”, mas o brilho estranho na ponta da flecha naquele momento sugeria outra coisa.",
+    atributos: { for: 4, des: 5, con: 4, int: 3, sab: 4, car: 2 },
+    habilidadeUnica: {
+      nome: "Disparo Certeiro",
+      custo: 3,
+      efeito: "Ignora cobertura e recebe +4 para acertar o ataque."
+    },
+    talentos: [
+      { nome: "Instinto Caçador", efeito: "+2 em testes para rastrear criaturas." },
+      { nome: "Mobilidade", efeito: "Pode se mover sem provocar ataque de oportunidade." }
+    ]
+  },
+  {
+    nome: "Otávio Cunha",
+    origem: "João Pessoa, PB",
+    classe: "Arqueiro",
+    historia: "Pescador e mergulhador experiente, sempre usou arpões com precisão impressionante. Um dia, durante uma pescaria noturna, avistou uma criatura luminosa no mar e, instintivamente, lançou o arpão — que percorreu uma distância impossível e atingiu em cheio. Desde então, Otávio sente que seus disparos estão ficando cada vez mais certeiros e poderosos. Não entende o motivo e não se preocupa: para ele, é só “o braço ficando bom com o tempo”.",
+    atributos: { for: 3, des: 5, con: 3, int: 3, sab: 5, car: 3 },
+    habilidadeUnica: {
+      nome: "Arpão Impossível",
+      custo: 4,
+      efeito: "Dispara com alcance dobrado e dano +1d8."
+    },
+    talentos: [
+      { nome: "Visão de Caçador", efeito: "+2 em ataques à distância contra alvos a mais de 15m." },
+      { nome: "Equilíbrio Impecável", efeito: "Vantagem em testes para não cair ou se manter firme." }
+    ]
+  }
+];
+
+function ganhoHP(nivel) {
+  if (nivel <= 5) return 5;
+  else if (nivel <= 10) return 7;
+  else return 10;
 }
-// Incrementa atributo
-const increase = (attribute) => {
-    if (attributes.pontos !== 0 && attributes[attribute] < 20) {
-        attributes[attribute]++;
-        attributes.pontos--;
-    }
-    pericias[attribute]++;
-    updateDisplayPer();
-};
-// Decrementa atributo
-const decrease = (attribute) => {
-    if (attributes[attribute] > 1) {
-        attributes[attribute]--;
-        attributes.pontos++;
-    }
-    if(pericias[attribute] > 1) pericias[attribute]--;
-    updateDisplayPer();
-};
-// Reseta os atributos
-const resetAttributes = () => {
-    for (const key in attributes) {
-        attributes[key] = key === "pontos" ? 20 : 1;
-    }
-    updateDisplay();
-};
-// Salva os atributos no localStorage
-const saveAttributes = () => {
-    const name = prompt("Digite o nome do personagem:");
-    if (!name) return;
 
-    for (let i = 0; i < Object.keys(localStorage).length; i++){
-        if(Object.keys(localStorage)[i] == name) {
-            alert("Nome invalido");
-            return;
-        };
-        
-    }
-
-    const data = { ...attributes, name };
-    localStorage.setItem(name, JSON.stringify(data));
-    alert(`Personagem "${name}" salvo com sucesso!`);
-};
-// Carrega os atributos do localStorage
-const loadAttributes = () => {
-    const savedCharacters = [];
-    for (let i = 0; i < Object.keys(localStorage).length; i++){
-        if(Object.keys(localStorage)[i] == "loglevel") continue;
-        savedCharacters.push(Object.keys(localStorage)[i]);
-    }
-    if (savedCharacters.length === 0) {
-        alert("Nenhum personagem salvo encontrado!");
-        return;
-    }
-    const name = prompt(
-        `Personagens salvos:\n${savedCharacters.join("\n")}\nDigite o nome para carregar:`
-    );
-    if (!name || !localStorage.getItem(name)) {
-        alert("Personagem não encontrado!");
-        return;
-    }
-
-    const data = JSON.parse(localStorage.getItem(name));
-    for (const key in attributes) {
-        attributes[key] = data[key] ?? attributes[key];
-    }
-    updateDisplay();
-    alert(`Personagem "${name}" carregado com sucesso!`);
-};
-
-// Importa os atributos de um arquivo JSON
-const importAttributes = (event) => {
-    const file = event.target.files[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = (e) => {
-        try {
-            const data = JSON.parse(e.target.result);
-            for (const key in attributes) {
-                attributes[key] = data[key] ?? attributes[key];
-            }
-            updateDisplay();
-            alert("Personagem importado com sucesso!");
-        } catch (err) {
-            alert("Erro ao importar o arquivo!");
-        }
-    };
-    reader.readAsText(file);
-};
-
-const deleteAttributes = () => {
-    const savedCharacters = [];
-    for (let i = 0; i < Object.keys(localStorage).length; i++){
-        if(Object.keys(localStorage)[i] == "loglevel") continue;
-        savedCharacters.push(Object.keys(localStorage)[i]);
-    }
-    if (savedCharacters.length === 0) {
-        alert("Nenhum personagem salvo encontrado!");
-        return;
-    }
-    const name = prompt(
-        `Personagens salvos:\n${savedCharacters.join("\n")}\nDigite o nome para deletar:`
-    );
-    if (!name || !localStorage.getItem(name)) {
-        alert("Personagem não encontrado!");
-        return;
-    }
-    localStorage.removeItem(name);
-
-    updateDisplay();
-    alert(`Personagem "${name}" deletado com sucesso!`);
+function ganhoShinsu(nivel) {
+  if (nivel <= 5) return 4;
+  else if (nivel <= 10) return 6;
+  else return 8;
 }
-// Exporta os atributos como um arquivo JSON
-const exportAttributes = () => {
-    const dataStr = JSON.stringify(attributes, null, 2);
-    const blob = new Blob([dataStr], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "personagem.json";
-    a.click();
-    URL.revokeObjectURL(url);
-    alert("Arquivo exportado com sucesso!");
-};
 
-updateDisplayPer();
+function ganhoEnergia(nivel){
+  if (nivel <= 5) return 1;
+  else if (nivel <= 10) return 2;
+  else return 3;
+}
+
+function calcularHP(atributos, nivel) {
+  return (atributos.con * 10) + (atributos.for * 5) + (nivel * ganhoHP(nivel));
+}
+
+function calcularShinsu(atributos, nivel) {
+  return (atributos.int * 12) + (atributos.sab * 6) + (nivel * ganhoShinsu(nivel));
+}
+function calcularEnergia(atributos, nivel) {
+  return (atributos.des * 3) + (atributos.car * 2) + (nivel * ganhoEnergia(nivel));
+}
+
+function preencherSeletor() {
+  const seletor = document.getElementById("seletor");
+  personagens.forEach((p, index) => {
+    const option = document.createElement("option");
+    option.value = index;
+    option.textContent = `${p.nome} (${p.classe})`;
+    seletor.appendChild(option);
+  });
+}
+
+function mostrarPersonagem() {
+  const index = document.getElementById("seletor").value;
+  const nivel = parseInt(document.getElementById("nivel").value);
+  const p = personagens[index];
+
+  const hp = calcularHP(p.atributos, nivel);
+  const shinsu = calcularShinsu(p.atributos, nivel);
+  const energia = calcularEnergia(p.atributos, nivel);
+
+  const atributosHTML = Object.entries(p.atributos)
+  .map(([nome, valor]) => {
+    const nomeFormatado = {
+      for: "Força",
+      des: "Destreza",
+      con: "Constituição",
+      int: "Inteligência",
+      sab: "Sabedoria",
+      car: "Carisma"
+    }[nome] || nome;
+    return `<p><strong>${nomeFormatado}:</strong> ${valor}</p>`;
+  })
+  .join("");
+
+  const resultado = document.getElementById("resultado");
+  resultado.innerHTML = `
+    <div class="card">
+      <h2>${p.nome} (${p.classe})</h2>
+      <p><strong>Origem:</strong> ${p.origem}</p>
+      <p><strong>História:</strong> ${p.historia}</p>
+      <div class="nivel">
+        <p><strong>Nível:</strong> ${nivel}</p>
+      </div>
+      <div class="status">
+        <p><strong>Vida:</strong> ${hp}</p>
+        <p><strong>Shinsu:</strong> ${shinsu}</p>
+        <p><strong>Energia:</strong> ${energia}</p>
+        ${atributosHTML}
+      </div>
+      <div class="habilidade">
+        <p><strong>Habilidade Única:</strong> ${p.habilidadeUnica.nome} (Custo: ${p.habilidadeUnica.custo} energia)</p>
+        <p>${p.habilidadeUnica.efeito}</p>
+      </div>
+      <div class="talentos">
+        <p><strong>Talentos:</strong></p>
+        <ul>
+          ${p.talentos.map(t => `<li><strong>${t.nome}:</strong> ${t.efeito}</li>`).join("")}
+        </ul>
+        <p><strong>+1 de energia por turno</p>
+      </div>
+    </div>
+  `;
+}
+
+const toggle = document.getElementById("toggleTheme");
+const label = document.getElementById("themeLabel");
+
+toggle.addEventListener("change", () => {
+  document.body.classList.toggle("dark");
+  label.textContent = toggle.checked ? "</br> Light Mode" : "</br> Dark mode";
+});
+document.body.classList.toggle("dark");
+  label.textContent = toggle.checked ? "</br> Light Mode" : "</br> Dark mode";
+preencherSeletor();
