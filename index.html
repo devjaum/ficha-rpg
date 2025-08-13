@@ -5,33 +5,91 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Calculadora de Personagem</title>
   <link rel="stylesheet" href="style.css" />
+  <script type="module" src="app.js"></script>
+  <script type="module" src="script.js"></script>
 </head>
 <body>
-    <div class="darkMode">
-        <label class="switch">
-            <span id="themeLabel">Dark mode</span>
-            <input type="checkbox" id="toggleTheme" checked/>
-            <span class="slider"></span>
-        </label>
+    
+    <!-- 🔐 Login -->
+    <div id="loginContainer" class="container">
+        <div id="login2">
+            <h1>🔐 Login</h1>
+
+            <div class="input-group">
+                <label for="usuario">E-mail:</label>
+                <input type="email" id="usuario" placeholder="Digite seu e-mail" />
+            </div>
+
+            <div class="input-group">
+                <label for="senha">Senha:</label>
+                <input type="password" id="senha" placeholder="Digite sua senha" />
+            </div>
+
+            <button id="loginBtn">Entrar</button>
+            <button id="registerBtn">Registrar</button>
+        </div>
+        <div id="register" style="display: none;">
+            <h3>Ou crie uma conta:</h3>
+            <div class="input-group">
+                <label for="email">Novo e-mail:</label>
+                <input type="email" id="email" placeholder="Digite seu e-mail" />
+            </div>
+
+            <div class="input-group">
+                <label for="senhaCadastro">Senha:</label>
+                <input type="password" id="senhaCadastro" placeholder="Crie sua senha" />
+            </div>
+
+            <button id="cadastroBtn">Cadastrar</button>
+            <button id="voltBtn">Voltar</button>
+        </div>
+        <p id="erro" style="color: red; text-align: center;"></p>
     </div>
-  <div class="container">
-    <h1>🎯 Escolha seu Personagem</h1>
 
-    <div class="input-group">
-      <label for="seletor">Personagem:</label>
-      <select id="seletor"></select>
+    <!-- 📜 Ficha do jogador -->
+    <div id="fichaContainer" class="container" style="display: none;">
+        <h2 id="tituloFicha"></h2>
+        <div class="input-group">
+            <label for="nivel">Nível:</label>
+            <input type="number" id="nivel" value="1" min="1" disabled/>
+        </div>
+        <div class="input-group">
+            <label for="mochila">🎒 Mochila</label>
+            <textarea id="mochila" rows="5"></textarea>
+        </div>
+        <div class="input-group">
+            <label for="notas">📝 Notas</label>
+            <textarea id="notas" rows="5"></textarea>
+        </div>
+        <button id="salvarBtn">Salvar Ficha</button>
+        <button id="logoutBtn" class="logout">Sair</button>
     </div>
+    <div class="containerPersonagens" id="containerPersonagens" style="display: none;">
+        <h1>🎯 Escolha seu Personagem</h1>
 
-    <div class="input-group">
-      <label for="nivel">Nível:</label>
-      <input type="number" id="nivel" value="1" min="1" />
+        <div class="input-group">
+        <label for="seletor">Personagem:</label>
+        <select id="seletor"></select>
+        </div>
+
+        <div class="input-group">
+        <label for="nivel">Nível:</label>
+        <input type="number" id="nivel" value="1" min="1" />
+        </div>
+
+        <button id="btnMostrar">Pré-visualizar</button>
+        <button id="btnSelecionar">Confirmar Personagem</button>
+        <button id="btnVoltar" type="button">Voltar</button>
+
+
+        <div id="resultado"></div>
     </div>
-
-    <button onclick="mostrarPersonagem()">Mostrar</button>
-
-    <div id="resultado"></div>
-  </div>
-
-  <script src="script.js"></script>
+    <!-- 🧙 Painel do Mestre -->
+    <div class="container" id="adminContainer" style="display: none;">
+        <h2>📋 Painel do Mestre</h2>
+        <div id="todasFichas"></div>
+        <button id="logoutAdminBtn" class="logout">Sair</button>
+    </div>
+    
 </body>
 </html>

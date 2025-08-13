@@ -1,3 +1,9 @@
+import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+
+const db = getFirestore();
+const auth = getAuth();
+
 const personagens = [
   // ⚔️ Guerreiros
   {
@@ -170,44 +176,17 @@ const personagens = [
   }
 ];
 
-function ganhoHP(nivel) {
-  if (nivel <= 5) return 5;
-  else if (nivel <= 10) return 7;
-  else return 10;
-}
-
-function ganhoShinsu(nivel) {
-  if (nivel <= 5) return 4;
-  else if (nivel <= 10) return 6;
-  else return 8;
-}
-
-function ganhoEnergia(nivel){
-  if (nivel <= 5) return 1;
-  else if (nivel <= 10) return 2;
-  else return 3;
-}
-
-function calcularHP(atributos, nivel) {
-  return (atributos.con * 10) + (atributos.for * 5) + (nivel * ganhoHP(nivel));
-}
-
-function calcularShinsu(atributos, nivel) {
-  return (atributos.int * 12) + (atributos.sab * 6) + (nivel * ganhoShinsu(nivel));
-}
-function calcularEnergia(atributos, nivel) {
-  return (atributos.des * 3) + (atributos.car * 2) + (nivel * ganhoEnergia(nivel));
-}
-
 function preencherSeletor() {
-  const seletor = document.getElementById("seletor");
-  personagens.forEach((p, index) => {
-    const option = document.createElement("option");
-    option.value = index;
-    option.textContent = `${p.nome} (${p.classe})`;
-    seletor.appendChild(option);
-  });
+    const seletor = document.getElementById("seletor");
+    seletor.innerHTML = "";
+    personagens.forEach((p, index) => {
+        const option = document.createElement("option");
+        option.value = index;
+        option.textContent = `${p.nome} (${p.classe})`;
+        seletor.appendChild(option);
+    });
 }
+window.preencherSeletor = preencherSeletor; // 👈 app.js poderá chamar
 
 function mostrarPersonagem() {
   const index = document.getElementById("seletor").value;
@@ -218,58 +197,99 @@ function mostrarPersonagem() {
   const shinsu = calcularShinsu(p.atributos, nivel);
   const energia = calcularEnergia(p.atributos, nivel);
 
-  const atributosHTML = Object.entries(p.atributos)
-  .map(([nome, valor]) => {
-    const nomeFormatado = {
-      for: "Força",
-      des: "Destreza",
-      con: "Constituição",
-      int: "Inteligência",
-      sab: "Sabedoria",
-      car: "Carisma"
-    }[nome] || nome;
-    return `<p><strong>${nomeFormatado}:</strong> ${valor}</p>`;
-  })
-  .join("");
-
-  const resultado = document.getElementById("resultado");
-  resultado.innerHTML = `
+  document.getElementById("resultado").innerHTML = `
     <div class="card">
       <h2>${p.nome} (${p.classe})</h2>
       <p><strong>Origem:</strong> ${p.origem}</p>
       <p><strong>História:</strong> ${p.historia}</p>
-      <div class="nivel">
-        <p><strong>Nível:</strong> ${nivel}</p>
-      </div>
-      <div class="status">
-        <p><strong>Vida:</strong> ${hp}</p>
-        <p><strong>Shinsu:</strong> ${shinsu}</p>
-        <p><strong>Energia:</strong> ${energia}</p>
-        ${atributosHTML}
-      </div>
-      <div class="habilidade">
-        <p><strong>Habilidade Única:</strong> ${p.habilidadeUnica.nome} (Custo: ${p.habilidadeUnica.custo} energia)</p>
-        <p>${p.habilidadeUnica.efeito}</p>
-      </div>
-      <div class="talentos">
-        <p><strong>Talentos:</strong></p>
-        <ul>
-          ${p.talentos.map(t => `<li><strong>${t.nome}:</strong> ${t.efeito}</li>`).join("")}
-        </ul>
-        <p><strong>+1 de energia por turno</p>
-      </div>
+      <p><strong>Vida:</strong> ${hp} | <strong>Shinsu:</strong> ${shinsu} | <strong>Energia:</strong> ${energia}</p>
     </div>
   `;
 }
 
-const toggle = document.getElementById("toggleTheme");
-const label = document.getElementById("themeLabel");
+// Confirmar personagem e salvar no Firestore
+async function selecionarPersonagem() {
+    const user = auth.currentUser;
+    if (!user) return alert("Você precisa estar logado!");
 
-toggle.addEventListener("change", () => {
-  document.body.classList.toggle("dark");
-  label.textContent = toggle.checked ? "</br> Light Mode" : "</br> Dark mode";
+    const uid = user.uid;
+    const index = document.getElementById("seletor").value;
+    const personagemEscolhido = personagens[index];
+    const nivelSelecionado = parseInt(document.getElementById("nivel").value) || 1;
+
+  // Salva no Firestore usando o esqueleto
+    await setDoc(doc(db, "fichas", uid), {
+        nivel: nivelSelecionado,
+        nome: personagemEscolhido.nome,
+        origem: personagemEscolhido.origem,
+        classe: personagemEscolhido.classe,
+        historia: personagemEscolhido.historia,
+        atributos: {
+            for: personagemEscolhido.atributos.for,
+            des: personagemEscolhido.atributos.des,
+            con: personagemEscolhido.atributos.con,
+            int: personagemEscolhido.atributos.int,
+            sab: personagemEscolhido.atributos.sab,
+            car: personagemEscolhido.atributos.car
+        },
+        habilidadeUnica: {
+            nome: personagemEscolhido.habilidadeUnica.nome,
+            custo: personagemEscolhido.habilidadeUnica.custo,
+            efeito: personagemEscolhido.habilidadeUnica.efeito
+        },
+        talentos: [
+            { nome: personagemEscolhido.talentos[0].nome, efeito: personagemEscolhido.talentos[0].efeito },
+            { nome: personagemEscolhido.talentos[1].nome, efeito: personagemEscolhido.talentos[1].efeito }
+        ],
+        mochila: "",
+        notas: ""
+        });
+
+  // Vai para a tela da ficha
+  document.getElementById("containerPersonagens").style.display = "none";
+  document.getElementById("fichaContainer").style.display = "block";
+
+  // Carrega a ficha com dados do Firestore
+  if (window.carregarFicha) {
+    window.carregarFicha(uid, user.email);
+  }
+}
+
+function sair() {
+  document.getElementById("containerPersonagens").style.display = "none";
+  document.getElementById("loginContainer").style.display = "block";
+}
+window.sair = sair; // 👈 expõe para usar no HTML se precisar
+
+// Cálculos
+function ganhoHP(nivel) { return nivel <= 5 ? 5 : nivel <= 10 ? 7 : 10; }
+function ganhoShinsu(nivel) { return nivel <= 5 ? 4 : nivel <= 10 ? 6 : 8; }
+function ganhoEnergia(nivel) { return nivel <= 5 ? 1 : nivel <= 10 ? 2 : 3; }
+
+window.ganhoEnergia = ganhoEnergia;
+window.ganhoHP = ganhoHP;
+window.ganhoShinsu = ganhoShinsu;
+
+
+function calcularHP(attr, nivel) {
+  return (attr.con * 10) + (attr.for * 5) + (nivel * ganhoHP(nivel));
+}
+function calcularShinsu(attr, nivel) {
+  return (attr.int * 12) + (attr.sab * 6) + (nivel * ganhoShinsu(nivel));
+}
+function calcularEnergia(attr, nivel) {
+  return (attr.des * 3) + (attr.car * 2) + (nivel * ganhoEnergia(nivel));
+}
+
+window.calcularEnergia = calcularEnergia;
+window.calcularHP = calcularHP;
+window.calcularShinsu = calcularShinsu;
+
+// Botões
+document.addEventListener("DOMContentLoaded", () => {
+    if (document.getElementById("seletor")) preencherSeletor();
+    document.getElementById("btnMostrar").onclick = mostrarPersonagem;
+    document.getElementById("btnSelecionar").onclick = selecionarPersonagem;
+    const btnVoltar = document.getElementById("btnVoltar");
+    if (btnVoltar) btnVoltar.onclick = sair;
 });
-document.body.classList.toggle("dark");
-  label.textContent = toggle.checked ? "</br> Light Mode" : "</br> Dark mode";
-
-preencherSeletor();
